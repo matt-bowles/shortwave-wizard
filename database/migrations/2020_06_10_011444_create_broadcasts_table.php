@@ -21,9 +21,10 @@ class CreateBroadcastsTable extends Migration
             $table->tinyInteger('end');
             $table->integer('days');
             $table->string('language');
-            $table->integer('power')->nullable();
+            $table->decimal('power')->nullable();
             $table->integer('azimuth')->nullable();
             $table->string('location')->nullable();
+            $table->string('country', 3)->nullable();
             $table->decimal('lat')->nullable();
             $table->decimal('lon')->nullable();
             // $table->timestamps();
