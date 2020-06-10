@@ -24,4 +24,5 @@ Route::prefix('broadcasts')->group(function() {
     Route::get('/live', 'BroadcastController@live');
     Route::get('/upcoming', 'BroadcastController@upcoming');
     Route::get('/filter', 'BroadcastController@filter');
+    Route::get('/selectOptions', 'BroadcastController@selectOptions');
 });

@@ -69,4 +69,36 @@ class BroadcastController extends Controller
         $broadcasts = $query->paginate(25);
         return response()->json($broadcasts, 200);
     }
+
+    /**
+     * TODO: this is inefficient for large amounts of data
+     * 
+     * Fetches the "options" to be used in "select" elements. Includes:
+     *  - all stations
+     *  - all languages
+     */
+    public function selectOptions()
+    {
+        $languages = Array();
+        $stations = Array();
+        $options = Broadcast::select('language', 'station')
+            ->distinct()
+            ->get();
+
+        foreach($options as $option) {
+            if (!in_array($option['language'], $languages)) {
+                array_push($languages, $option['language']);
+            }
+
+            if (!in_array($option['station'], $stations)) {
+                array_push($stations, $option['station']);
+            }
+        }
+
+        // Alphabetically sort all the options
+        sort($languages);
+        sort($stations);
+
+        return response()->json(["languages" => $languages, "stations" => $stations], 200);
+    }
 }
