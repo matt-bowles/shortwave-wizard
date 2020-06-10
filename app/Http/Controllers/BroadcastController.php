@@ -26,7 +26,7 @@ class BroadcastController extends Controller
 
         $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')
         ->where('start', '>=', $time)->where('end', '<=', $time)->paginate(25);
-        
+
         return response()->json($broadcasts, 200);
     }
 
@@ -40,6 +40,33 @@ class BroadcastController extends Controller
 
         $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')->where('start', '>=', $time+30)->paginate(25);
 
+        return response()->json($broadcasts, 200);
+    }
+
+    /**
+     * Returns a list of broadcasts filtered by frequency, station, and/or language
+     */
+    public function filter(Request $request)
+    {
+        // Initial dummy statement, i.e. select all broadcasts (so that they can be later paginated)
+        $query = Broadcast::where('freq', '>=', 0);
+
+        // Filter by frequency
+        if (!empty($request->freq)) {
+            $query->where('freq', '=', $request->freq);
+        }
+
+        // Filter by station
+        if (!empty($request->station)) {
+            $query->where('station', 'LIKE', '%'.$request->station.'%');
+        }
+
+        // Filter by language
+        if (!empty($request->language)) {
+            $query->where('language', '=', $request->language);
+        }
+
+        $broadcasts = $query->paginate(25);
         return response()->json($broadcasts, 200);
     }
 }
