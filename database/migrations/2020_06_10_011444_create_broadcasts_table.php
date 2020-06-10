@@ -17,8 +17,8 @@ class CreateBroadcastsTable extends Migration
             $table->id();
             $table->integer('freq');
             $table->string('station');
-            $table->tinyInteger('start');
-            $table->tinyInteger('end');
+            $table->integer('start');
+            $table->integer('end');
             $table->integer('days');
             $table->string('language');
             $table->decimal('power')->nullable();
