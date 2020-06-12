@@ -17,20 +17,6 @@ class BroadcastController extends Controller
     }
 
     /**
-     * Return all broadcasts currently live
-     */
-    public function live()
-    {
-        $time = date("Hi");                         // UTC; 00:00 - 23:59
-        $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
-
-        $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')
-        ->where('start', '>=', $time)->where('end', '<=', $time)->paginate(25);
-
-        return response()->json($broadcasts, 200);
-    }
-
-    /**
      * Return all upcoming broadcasts (i.e. starting within 30mins)
      */
     public function upcoming()
@@ -44,7 +30,11 @@ class BroadcastController extends Controller
     }
 
     /**
-     * Returns a list of broadcasts filtered by frequency, station, and/or language
+     * Returns a list of broadcasts filtered by:
+     *  - frequency
+     *  - station
+     *  - language
+     *  - whether the broadcast is live
      */
     public function filter(Request $request)
     {
@@ -66,7 +56,16 @@ class BroadcastController extends Controller
             $query->where('language', '=', $request->language);
         }
 
-        $broadcasts = $query->paginate(25);
+        // Filter by live broadcasts
+        if (!empty($request->live) and ($request->live == true)) {
+            $time = date("Hi");                         // UTC; 00:00 - 23:59
+            $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
+
+            $query->where('days', 'LIKE', '%'.$day.'%')
+            ->where('start', '>=', $time)->where('end', '<=', $time)->paginate(25);
+        }
+
+        $broadcasts = $query->paginate(2);
         return response()->json($broadcasts, 200);
     }
 
