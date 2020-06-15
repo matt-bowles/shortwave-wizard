@@ -12,6 +12,7 @@ export default class App extends React.Component {
     
         this.state = {
              broadcasts: [],
+             pageData: {},
              language: '',
              freq: '',
              station: '',
@@ -37,22 +38,27 @@ export default class App extends React.Component {
 
     async handleFilterSearch() {
         let data = await filterSearch(this.state.freq, this.state.language, this.state.station);
-        console.log(data.data.data);
-        this.setState({broadcasts:data.data.data});
+        
+        let broadcasts = data.data.data;
+        delete data.data.data;
+        let pageData = data.data;
+        this.setState({ broadcasts, pageData });
     }
     
 
     render() {
         return (
             <div className="container">
-                <h1>Component</h1>
                 <SearchBar 
-                handleLanguageChange={this.handleLanguageChange}
-                handleStationChange={this.handleStationChange}
-                handleFreqChange={this.handleFreqChange}
-                handleFilterSearch={this.handleFilterSearch}
+                    handleLanguageChange={this.handleLanguageChange}
+                    handleStationChange={this.handleStationChange}
+                    handleFreqChange={this.handleFreqChange}
+                    handleFilterSearch={this.handleFilterSearch}
                 />
-                <BroadcastList broadcasts={this.state.broadcasts} />
+                <BroadcastList
+                    broadcasts={this.state.broadcasts}
+                    pageData={this.state.pageData}
+                />
             </div>
         )
     }

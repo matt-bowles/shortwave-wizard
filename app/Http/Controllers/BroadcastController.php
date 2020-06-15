@@ -55,7 +55,7 @@ class BroadcastController extends Controller
         ];
 
         foreach($columns as $column) {
-            if (request()->has($column)) {
+            if (!empty(request($column))) {
                 $broadcasts = $broadcasts->where($column, request($column));
                 $queries[$column] = request($column);
             }

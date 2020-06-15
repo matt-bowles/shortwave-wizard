@@ -21,3 +21,13 @@ export const filterSearch = async (freq, language, station) => {
         console.log(err);
     }
 }
+
+export const getChangePageData = async (url) => {
+    try {
+        let data = await axios.get(url);
+        return data;
+    } catch (err) {
+        // TODO: handle error
+        console.log(err);
+    }
+}
