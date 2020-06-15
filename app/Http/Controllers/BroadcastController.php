@@ -29,6 +29,14 @@ class BroadcastController extends Controller
         return response()->json($broadcasts, 200);
     }
 
+    function getLive($query) {
+        $time = date("Hi");                         // UTC; 00:00 - 23:59
+        $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
+
+        return $query->where('days', 'LIKE', '%'.$day.'%')
+            ->where('start', '>=', $time)->where('end', '<=', $time);
+    }
+
     /**
      * Returns a list of broadcasts filtered by:
      *  - frequency
@@ -39,33 +47,26 @@ class BroadcastController extends Controller
     public function filter(Request $request)
     {
         // Initial dummy statement, i.e. select all broadcasts (so that they can be later paginated)
-        $query = Broadcast::where('freq', '>=', 0);
+        $broadcasts = new Broadcast;
+        $queries = [];
 
-        // Filter by frequency
-        if (!empty($request->freq)) {
-            $query->where('freq', '=', $request->freq);
-        }
+        $columns = [
+            'freq', 'station', 'language'
+        ];
 
-        // Filter by station
-        if (!empty($request->station)) {
-            $query->where('station', 'LIKE', '%'.$request->station.'%');
-        }
-
-        // Filter by language
-        if (!empty($request->language)) {
-            $query->where('language', '=', $request->language);
+        foreach($columns as $column) {
+            if (request()->has($column)) {
+                $broadcasts = $broadcasts->where($column, request($column));
+                $queries[$column] = request($column);
+            }
         }
 
         // Filter by live broadcasts
-        if (!empty($request->live) and ($request->live == true)) {
-            $time = date("Hi");                         // UTC; 00:00 - 23:59
-            $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
+        // if (!empty($request->live) and ($request->live == true)) {
+        //     $query = $this->getLive($query);
+        // }
 
-            $query->where('days', 'LIKE', '%'.$day.'%')
-            ->where('start', '>=', $time)->where('end', '<=', $time)->paginate(25);
-        }
-
-        $broadcasts = $query->paginate(2);
+        $broadcasts = $broadcasts->paginate(3)->appends($queries);
         return response()->json($broadcasts, 200);
     }
 
