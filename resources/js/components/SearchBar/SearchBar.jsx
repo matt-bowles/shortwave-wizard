@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FormControl, FormGroup, TextField, NativeSelect, Button } from '@material-ui/core';
+import { FormControl, FormGroup, TextField, NativeSelect, Button, FormControlLabel, Switch } from '@material-ui/core';
 
 import { fetchOptions } from '../../api';
 
-const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange, handleFilterSearch }) => {
+const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange, handleIsLiveChange, handleFilterSearch }) => {
     
     const [fetchedStations, setFetchedStations] = useState([]);
     const [fetchedLanguages, setFetchedLanguages] = useState([]);
@@ -42,6 +42,19 @@ const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange,
             }}
             onChange={(e) => handleFreqChange(e.target.value)}
             />
+
+
+            <FormControlLabel
+                control={
+                    <Switch
+                        onChange={handleIsLiveChange}
+                        color="primary"
+                    />
+                }
+                label="Only show live broadcasts"
+            />
+
+
             <Button onClick={() => handleFilterSearch() }>Go</Button>
         </FormGroup>
     )

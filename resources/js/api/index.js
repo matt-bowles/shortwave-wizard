@@ -12,9 +12,9 @@ export const fetchOptions = async () => {
     }
 }
 
-export const filterSearch = async (freq, language, station) => {
+export const filterSearch = async (freq, language, station, isLive) => {
     try {
-        let data = await axios.get(`${API_URL}/broadcasts/filter?freq=${freq}&language=${language}&station=${station}`);
+        let data = await axios.get(`${API_URL}/broadcasts/filter?freq=${freq}&language=${language}&station=${station}&live=${isLive}`);
         return data;
     } catch (err) {
         // TODO: handle error
