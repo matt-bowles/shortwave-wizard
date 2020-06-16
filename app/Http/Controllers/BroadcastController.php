@@ -34,7 +34,7 @@ class BroadcastController extends Controller
         $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
 
         return $query->where('days', 'LIKE', '%'.$day.'%')
-            ->where('start', '>=', $time)->where('end', '<=', $time);
+            ->where('start', '<=', $time)->where('end', '>=', $time);
     }
 
     /**
@@ -62,9 +62,10 @@ class BroadcastController extends Controller
         }
 
         // Filter by live broadcasts
-        // if (!empty($request->live) and ($request->live == true)) {
-        //     $query = $this->getLive($query);
-        // }
+        if ($request->live == "true") {
+            $broadcasts = $this->getLive($broadcasts);
+            $queries['live'] = "true";
+        }
 
         $broadcasts = $broadcasts->paginate(3)->appends($queries);
         return response()->json($broadcasts, 200);
