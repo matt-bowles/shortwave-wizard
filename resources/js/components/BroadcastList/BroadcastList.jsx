@@ -31,11 +31,14 @@ export default function BroadcastList({broadcasts, pageData}) {
         setPage(newPage++);
     }
     
-    const isLive = (start, end) => {
+    const isLive = (start, end, days) => {
         var d = new Date();
         var n = `${d.getUTCHours()}${d.getUTCMinutes()}`;
+    
+        var today = new Date().getDay()+1;
+        if (today === 8) today = 1;
 
-        return (start <= n && end >= n) ? "live" : "notLive";
+        return (start <= n && end >= n && days.includes(today)) ? "live" : "notLive";
     }
 
     const getDayString = (days) => {
