@@ -38,7 +38,12 @@ export default function BroadcastList({broadcasts, pageData}) {
         var today = new Date().getDay()+1;
         if (today === 8) today = 1;
 
-        return (start <= n && end >= n && days.includes(today)) ? "live" : "notLive";
+        // Broadcasts span several days, according to UTC
+        if (start > end) {
+            return !(end <= n && start >= n && days.toString().includes(today)) ? "live" : "";
+        }
+        
+        return (start <= n && end >= n && days.toString().includes(today)) ? "live" : "";
     }
 
     const getDayString = (days) => {
@@ -85,13 +90,13 @@ export default function BroadcastList({broadcasts, pageData}) {
                     </TableHead>
                     <TableBody>
                         {fetchedBroadcasts.map((broadcast, i) => 
-                            <TableRow key={i} hover className={isLive(broadcast.start, broadcast.end)}>
+                            <TableRow key={i} hover className={isLive(broadcast.start, broadcast.end, broadcast.days)}>
                                 <TableCell>{broadcast.freq}</TableCell>
                                 <TableCell>{broadcast.station}</TableCell>
                                 <TableCell>{broadcast.language}</TableCell>
                                 <TableCell>{getDayString(broadcast.days)}</TableCell>
                                 <TableCell title={convertToLocalTime(broadcast.start, broadcast.end)}>{formatTime(broadcast.start)} - {formatTime(broadcast.end)}</TableCell>
-                                <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=` + broadcast.lat + "," + broadcast.lon}>{broadcast.location}</a></TableCell>
+                                <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=` + broadcast.lon + "," + broadcast.lat}>{broadcast.location}</a></TableCell>
                             </TableRow>
                         )}
                     </TableBody>
