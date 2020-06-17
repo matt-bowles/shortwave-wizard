@@ -4,6 +4,8 @@ import Flag from 'react-world-flags';
 
 import { fetchOptions, getChangePageData } from '../../api';
 
+import styles from './BroadcastList.module.css';
+
 export default function BroadcastList({broadcasts, pageData}) {
     
     if (broadcasts.length < 1) { return (<div>Please search</div>)}
@@ -29,6 +31,41 @@ export default function BroadcastList({broadcasts, pageData}) {
         setPage(newPage++);
     }
     
+    const isLive = (start, end) => {
+        var d = new Date();
+        var n = `${d.getUTCHours()}${d.getUTCMinutes()}`;
+
+        return (start <= n && end >= n) ? "live" : "notLive";
+    }
+
+    const getDayString = (days) => {
+        days = days.toString();
+        let formatted = "";
+
+        let today = new Date().getDay()+1;
+        if (today === 8) today = 1;
+
+        if (days.includes(2)) formatted += "M";
+        if (days.includes(3)) formatted += "Tu";
+        if (days.includes(4)) formatted += "W";
+        if (days.includes(5)) formatted += "Th";
+        if (days.includes(6)) formatted += "F";
+        if (days.includes(7)) formatted += "Sa";
+        if (days.includes(1)) formatted += "Su";
+
+        return formatted;
+    }
+
+    const formatTime = (time) => {
+        var formatted = time.toString().padStart(4, '0'); 
+        formatted = formatted.substring(0,2) + ":" + formatted.substring(2);    // hh:mm
+        return formatted;
+    }
+
+    const convertToLocalTime = (start, end) => {
+        return "[placeholder]";
+    }
+    
     return (
         <div>
             <TableContainer>
@@ -38,17 +75,19 @@ export default function BroadcastList({broadcasts, pageData}) {
                             <TableCell>Frequency (kHz)</TableCell>
                             <TableCell>Station</TableCell>
                             <TableCell>Language</TableCell>
-                            <TableCell>Time</TableCell>
+                            <TableCell>Days</TableCell>
+                            <TableCell>Time (UTC)</TableCell>
                             <TableCell>Broadcast Origin</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {fetchedBroadcasts.map((broadcast, i) => 
-                            <TableRow key={i} hover>
+                            <TableRow key={i} hover className={isLive(broadcast.start, broadcast.end)}>
                                 <TableCell>{broadcast.freq}</TableCell>
                                 <TableCell>{broadcast.station}</TableCell>
                                 <TableCell>{broadcast.language}</TableCell>
-                                <TableCell>{broadcast.time}</TableCell>
+                                <TableCell>{getDayString(broadcast.days)}</TableCell>
+                                <TableCell title={convertToLocalTime(broadcast.start, broadcast.end)}>{formatTime(broadcast.start)} - {formatTime(broadcast.end)}</TableCell>
                                 <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=` + broadcast.lat + "," + broadcast.lon}>{broadcast.location}</a></TableCell>
                             </TableRow>
                         )}
