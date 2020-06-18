@@ -40,7 +40,7 @@ export default class App extends React.Component {
         this.setState({ freq });
     }
 
-    handleIsLiveChange(isLive) {
+    handleIsLiveChange(event) {
         this.setState({ isLive: event.target.checked });
     }
 
