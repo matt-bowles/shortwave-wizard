@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { SearchBar, BroadcastList } from './index';
-
-import { filterSearch } from '../api/';
+import { CircularProgress } from '@material-ui/core';
+import { filterSearch, getChangePageData } from '../api/';
 
 export default class App extends React.Component {
 
@@ -17,6 +17,7 @@ export default class App extends React.Component {
              freq: '',
              station: '',
              isLive: false,
+             isLoading: false,
         }
 
         this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -24,6 +25,7 @@ export default class App extends React.Component {
         this.handleFreqChange = this.handleFreqChange.bind(this);
         this.handleIsLiveChange = this.handleIsLiveChange.bind(this);
         this.handleFilterSearch = this.handleFilterSearch.bind(this);
+        this.changePage = this.changePage.bind(this);
     }
 
     handleLanguageChange(language) {
@@ -43,14 +45,41 @@ export default class App extends React.Component {
     }
 
     async handleFilterSearch() {
+        this.setState({ isLoading: true })
         let data = await filterSearch(this.state.freq, this.state.language, this.state.station, this.state.isLive);
         
         let broadcasts = data.data.data;
         delete data.data.data;
         let pageData = data.data;
-        this.setState({ broadcasts, pageData });
+        this.setState({ broadcasts, pageData, isLoading: false });
     }
-    
+
+    async changePage(url) {
+        this.setState({ isLoading: true });
+        let data = await getChangePageData(url);
+
+        let broadcasts = data.data.data;
+        delete data.data.data;
+        let pageData = data.data;
+
+        this.setState({ broadcasts, pageData, isLoading: false });
+    }
+
+    renderBroadcastList() {
+        if (this.state.isLoading) {
+            return (
+                <CircularProgress />
+            );
+        }
+
+        return (
+            <BroadcastList
+                broadcasts={this.state.broadcasts}
+                pageData={this.state.pageData}
+                changePage={this.changePage}
+            />
+        );
+    }
 
     render() {
         return (
@@ -62,10 +91,7 @@ export default class App extends React.Component {
                     handleIsLiveChange={this.handleIsLiveChange}
                     handleFilterSearch={this.handleFilterSearch}
                 />
-                <BroadcastList
-                    broadcasts={this.state.broadcasts}
-                    pageData={this.state.pageData}
-                />
+                {this.renderBroadcastList()}
             </div>
         )
     }
