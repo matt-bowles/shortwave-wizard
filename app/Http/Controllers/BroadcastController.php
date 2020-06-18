@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Broadcast;
+use App\BroadcastView;
 use Illuminate\Http\Request;
 
 class BroadcastController extends Controller
@@ -14,7 +15,7 @@ class BroadcastController extends Controller
      */
     public function index()
     {
-        $broadcasts = Broadcast::paginate(self::PAGINATION_NUM);
+        $broadcasts = BroadcastView::paginate(self::PAGINATION_NUM);
         return response()->json($broadcasts->toArray(), 200);
     }
 
@@ -26,17 +27,9 @@ class BroadcastController extends Controller
         $time = date("Hi");
         $day = date('N', strtotime("l")) + 2;
 
-        $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')->where('start', '>=', $time+30)->paginate(self::PAGINATION_NUM);
+        $broadcasts = BroadcastView::where('days', 'LIKE', '%'.$day.'%')->where('start', '>=', $time+30)->paginate(self::PAGINATION_NUM);
 
         return response()->json($broadcasts, 200);
-    }
-
-    function getLive($query) {
-        $time = date("Hi");                         // UTC; 00:00 - 23:59
-        $day = date('N', strtotime("l")) + 2;       // Day of week, with 1 being Sunday
-
-        return $query->where('days', 'LIKE', '%'.$day.'%')
-            ->where('start', '<=', $time)->where('end', '>=', $time);
     }
 
     /**
@@ -49,11 +42,11 @@ class BroadcastController extends Controller
     public function filter(Request $request)
     {
         // Initial dummy statement, i.e. select all broadcasts (so that they can be later paginated)
-        $broadcasts = new Broadcast;
+        $broadcasts = new BroadcastView;
         $queries = [];
 
         $columns = [
-            'freq', 'station', 'language'
+            'freq', 'station', 'language', 'isLive'
         ];
 
         foreach($columns as $column) {
@@ -61,12 +54,6 @@ class BroadcastController extends Controller
                 $broadcasts = $broadcasts->where($column, request($column));
                 $queries[$column] = request($column);
             }
-        }
-
-        // Filter by live broadcasts
-        if ($request->live == "true") {
-            $broadcasts = $this->getLive($broadcasts);
-            $queries['live'] = "true";
         }
 
         $broadcasts = $broadcasts->paginate(self::PAGINATION_NUM)->appends($queries);

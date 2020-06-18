@@ -8,32 +8,18 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
     
     if (broadcasts.length < 1) { return (<div>Please search</div>)}
 
+    // 1 = Sunday, 2 = Monday ... 7 = Saturday
+    let today = new Date().getDay()+1;
+    if (today === 8) today = 1;
+
     const handleChangePage = async (event, newPage) => {
         let url = ((pageData.current_page-1) < newPage) ? pageData.next_page_url : pageData.prev_page_url;
         changePage(url);
-    }
-    
-    const isLive = (start, end, days) => {
-        var d = new Date();
-        var n = `${d.getUTCHours()}${d.getUTCMinutes()}`;
-    
-        var today = new Date().getDay()+1;
-        if (today === 8) today = 1;
-
-        // Broadcasts span several days, according to UTC
-        if (start > end) {
-            return !(end <= n && start >= n && days.toString().includes(today)) ? "live" : "";
-        }
-        
-        return (start <= n && end >= n && days.toString().includes(today)) ? "live" : "";
     }
 
     const getDayString = (days) => {
         days = days.toString();
         let formatted = "";
-
-        let today = new Date().getDay()+1;
-        if (today === 8) today = 1;
 
         if (days.includes(2)) formatted += "M";
         if (days.includes(3)) formatted += "Tu";
@@ -72,13 +58,13 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                     </TableHead>
                     <TableBody>
                         {broadcasts.map((broadcast, i) => 
-                            <TableRow key={i} hover className={isLive(broadcast.start, broadcast.end, broadcast.days)}>
+                            <TableRow key={i} hover className={(broadcast.isLive === 1) ? "live" : ""}>
                                 <TableCell>{broadcast.freq}</TableCell>
                                 <TableCell>{broadcast.station}</TableCell>
                                 <TableCell>{broadcast.language}</TableCell>
                                 <TableCell>{getDayString(broadcast.days)}</TableCell>
                                 <TableCell title={convertToLocalTime(broadcast.start, broadcast.end)}>{formatTime(broadcast.start)} - {formatTime(broadcast.end)}</TableCell>
-                                <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=` + broadcast.lon + "," + broadcast.lat}>{broadcast.location}</a></TableCell>
+                                <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=${broadcast.coords}`}>{broadcast.location}</a></TableCell>
                             </TableRow>
                         )}
                     </TableBody>
