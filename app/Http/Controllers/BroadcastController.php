@@ -6,13 +6,15 @@ use App\Broadcast;
 use Illuminate\Http\Request;
 
 class BroadcastController extends Controller
-{
+{   
+    const PAGINATION_NUM  = 250;
+
     /**
      * Return all broadcasts registered within database
      */
     public function index()
     {
-        $broadcasts = Broadcast::paginate(25);
+        $broadcasts = Broadcast::paginate(self::PAGINATION_NUM);
         return response()->json($broadcasts->toArray(), 200);
     }
 
@@ -24,7 +26,7 @@ class BroadcastController extends Controller
         $time = date("Hi");
         $day = date('N', strtotime("l")) + 2;
 
-        $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')->where('start', '>=', $time+30)->paginate(25);
+        $broadcasts = Broadcast::where('days', 'LIKE', '%'.$day.'%')->where('start', '>=', $time+30)->paginate(self::PAGINATION_NUM);
 
         return response()->json($broadcasts, 200);
     }
@@ -67,7 +69,7 @@ class BroadcastController extends Controller
             $queries['live'] = "true";
         }
 
-        $broadcasts = $broadcasts->paginate(3)->appends($queries);
+        $broadcasts = $broadcasts->paginate(self::PAGINATION_NUM)->appends($queries);
         return response()->json($broadcasts, 200);
     }
 
