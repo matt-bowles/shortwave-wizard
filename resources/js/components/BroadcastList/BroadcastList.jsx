@@ -6,7 +6,10 @@ import styles from './BroadcastList.module.css';
 
 export default function BroadcastList({broadcasts, pageData, changePage}) {
     
-    if (broadcasts.length < 1) { return (<div>Please search</div>)}
+    if (pageData.total === undefined) return <></>;
+    if (pageData.total === 0) return <h2>No results found</h2>;
+
+
 
     // 1 = Sunday, 2 = Monday ... 7 = Saturday
     let today = new Date().getDay()+1;
