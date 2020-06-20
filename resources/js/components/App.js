@@ -13,40 +13,16 @@ export default class App extends React.Component {
         this.state = {
              broadcasts: [],
              pageData: {},
-             language: '',
-             freq: '',
-             station: '',
-             isLive: false,
              isLoading: false,
         }
 
-        this.handleLanguageChange = this.handleLanguageChange.bind(this);
-        this.handleStationChange = this.handleStationChange.bind(this);
-        this.handleFreqChange = this.handleFreqChange.bind(this);
-        this.handleIsLiveChange = this.handleIsLiveChange.bind(this);
         this.handleFilterSearch = this.handleFilterSearch.bind(this);
         this.changePage = this.changePage.bind(this);
     }
 
-    handleLanguageChange(language) {
-        this.setState({ language });
-    }
-
-    handleStationChange(station) {
-        this.setState({ station });
-    }
-
-    handleFreqChange(freq) {
-        this.setState({ freq });
-    }
-
-    handleIsLiveChange(event) {
-        this.setState({ isLive: event.target.checked });
-    }
-
-    async handleFilterSearch() {
+    async handleFilterSearch(params) {
         this.setState({ isLoading: true })
-        let data = await filterSearch(this.state.freq, this.state.language, this.state.station, this.state.isLive);
+        let data = await filterSearch(params);
         
         let broadcasts = data.data.data;
         delete data.data.data;
@@ -88,10 +64,6 @@ export default class App extends React.Component {
                 <Title />
                 <Paper>
                     <SearchBar 
-                        handleLanguageChange={this.handleLanguageChange}
-                        handleStationChange={this.handleStationChange}
-                        handleFreqChange={this.handleFreqChange}
-                        handleIsLiveChange={this.handleIsLiveChange}
                         handleFilterSearch={this.handleFilterSearch}
                     />
                     {this.renderBroadcastList()}

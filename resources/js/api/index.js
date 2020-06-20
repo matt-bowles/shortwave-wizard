@@ -12,9 +12,18 @@ export const fetchOptions = async () => {
     }
 }
 
-export const filterSearch = async (freq, language, station, isLive) => {
+export const filterSearch = async (params) => {
+
+    let url = `${API_URL}/broadcasts/filter?`;
+     
+    // Construct URL from provided params
+    Object.keys(params).forEach((val) => {
+        if (params[val] === 0 || params[val] === "") return;
+        url += `&${val}=${params[val]}`;
+    });
+
     try {
-        let data = await axios.get(`${API_URL}/broadcasts/filter?freq=${freq}&language=${language}&station=${station}&isLive=${+isLive}`);
+        let data = await axios.get(url);
         return data;
     } catch (err) {
         // TODO: handle error

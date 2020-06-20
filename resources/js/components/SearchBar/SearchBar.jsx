@@ -1,26 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { FormControl, FormGroup, TextField, NativeSelect, Button, FormControlLabel, Switch, Container, Paper as div, Grid, InputLabel } from '@material-ui/core';
+import { FormControl, FormGroup, TextField, NativeSelect, Button, FormControlLabel, Switch, Container, Paper as div, Grid, InputLabel, InputAdornment } from '@material-ui/core';
 
 import { fetchOptions } from '../../api';
 
-const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange, handleIsLiveChange, handleFilterSearch }) => {
+export default class SearchBar extends React.Component {
     
-    const [fetchedStations, setFetchedStations] = useState([]);
-    const [fetchedLanguages, setFetchedLanguages] = useState([]);
-    
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const data = await fetchOptions();
+    constructor(props) {
+        super(props);
 
-            setFetchedStations(data.data.stations);
-            setFetchedLanguages(data.data.languages);
+        this.state = {
+            language: '',
+            station: '',
+            freq: 0,
+            isLive: false,
+
+            stationList: [],
+            languageList: []
         }
+    }
 
-        fetchAPI();
-    }, [setFetchedStations]);
+   async componentDidMount() {
+        const data = await fetchOptions();
+        this.setState({
+            stationList: data.data.stations,
+            languageList: data.data.languages,
+        })
+    }
 
-    return (
-        <div style={{ padding: "16px" }}>
+    onChange(e) {
+        this.setState({ [e.target.name]: (e.target.value === "") ? e.target.checked : e.target.value });
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+        this.props.handleFilterSearch({
+            station: this.state.station,
+            language: this.state.language,
+            freq: this.state.freq,
+            isLive: +this.state.isLive
+        });
+    }
+    
+    render() {
+        return (
+            <div style={{ padding: "16px" }}>
 
             <Grid container alignItems="flex-start" spacing={2}>
 
@@ -29,9 +52,9 @@ const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange,
 
                         <InputLabel shrink>Station</InputLabel>
 
-                        <NativeSelect defaultValue="" onChange={(e) => handleStationChange(e.target.value)}>
+                        <NativeSelect defaultValue="" onChange={(e) => this.onChange(e)} name="station">
                             <option value="">All stations</option>
-                            {fetchedStations.map((station, i) => <option key={i} value={station}>{station}</option>)}
+                            {this.state.stationList.map((station, i) => <option key={i} value={station}>{station}</option>)}
                         </NativeSelect>
                         
                     </FormControl>
@@ -42,24 +65,26 @@ const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange,
 
                         <InputLabel shrink>Language</InputLabel>
 
-                        <NativeSelect label="Language" defaultValue="" onChange={(e) => handleLanguageChange(e.target.value)}>
+                        <NativeSelect label="Language" defaultValue="" onChange={(e) => this.onChange(e)} name="language">
                             <option value="">All languages</option>
-                            {fetchedLanguages.map((language, i) => <option key={i} value={language}>{language}</option>)}
+                            {this.state.languageList.map((language, i) => <option key={i} value={language}>{language}</option>)}
                         </NativeSelect>
 
                     </FormControl>
                 </Grid>
 
                 <Grid item xs={3}>
-                <InputLabel shrink>Frequency (kHz)</InputLabel>
+                <InputLabel shrink>Frequency</InputLabel>
                     <TextField
                         id="filled-number"
+                        name="freq"
                         type="number"
                         InputLabelProps={{
                             shrink: true,
+                            startAdornment: <InputAdornment position="start">kHz</InputAdornment>
                         }}
                         placeholder="Leave blank for all"
-                        onChange={(e) => handleFreqChange(e.target.value)}
+                        onChange={(e) => this.onChange(e)}
                     />
                 </Grid>
 
@@ -67,7 +92,8 @@ const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange,
                 <FormControlLabel
                 control={
                     <Switch
-                        onChange={handleIsLiveChange}
+                        name="isLive"
+                        onChange={(e) => this.onChange(e)}
                         color="primary"
                     />
                 }
@@ -78,10 +104,9 @@ const SearchBar =({ handleLanguageChange, handleStationChange, handleFreqChange,
             </Grid>
                 
             <Grid style={{marginTop: "16px"}}>
-                <Button variant="contained" color="primary" type="submit" onClick={() => handleFilterSearch() }>Search</Button>
+                <Button variant="contained" color="primary" type="submit" onClick={(e) => this.onSubmit(e) }>Search</Button>
             </Grid>
-        </div>
-    )
+            </div>
+        )
+    }
 }
-
-export default SearchBar;
