@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter, Paper as div, makeStyles } from '@material-ui/core';
 import Flag from 'react-world-flags';
 
 import styles from './BroadcastList.module.css';
@@ -44,8 +44,8 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
     
     return (
         <div>
-            <TableContainer>
-                <Table>
+            <TableContainer style={{maxHeight: "40em"}}>
+                <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Frequency (kHz)</TableCell>

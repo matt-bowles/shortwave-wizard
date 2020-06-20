@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { SearchBar, BroadcastList } from './index';
-import { CircularProgress } from '@material-ui/core';
+import { SearchBar, BroadcastList, Title } from './index';
+import { CircularProgress, Container, Paper } from '@material-ui/core';
 import { filterSearch, getChangePageData } from '../api/';
 
 export default class App extends React.Component {
@@ -84,14 +84,19 @@ export default class App extends React.Component {
     render() {
         return (
             <div className="container">
-                <SearchBar 
-                    handleLanguageChange={this.handleLanguageChange}
-                    handleStationChange={this.handleStationChange}
-                    handleFreqChange={this.handleFreqChange}
-                    handleIsLiveChange={this.handleIsLiveChange}
-                    handleFilterSearch={this.handleFilterSearch}
-                />
-                {this.renderBroadcastList()}
+                <Container>
+                <Title />
+                <Paper>
+                    <SearchBar 
+                        handleLanguageChange={this.handleLanguageChange}
+                        handleStationChange={this.handleStationChange}
+                        handleFreqChange={this.handleFreqChange}
+                        handleIsLiveChange={this.handleIsLiveChange}
+                        handleFilterSearch={this.handleFilterSearch}
+                    />
+                    {this.renderBroadcastList()}
+                </Paper>
+                </Container>
             </div>
         )
     }
