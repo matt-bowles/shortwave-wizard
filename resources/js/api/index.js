@@ -18,7 +18,7 @@ export const filterSearch = async (params) => {
      
     // Construct URL from provided params
     Object.keys(params).forEach((val) => {
-        if (params[val] === 0 || params[val] === "") return;
+        if (params[val] === 0 || params[val] === "" || params[val] === undefined) return;
         url += `&${val}=${params[val]}`;
     });
 

@@ -15,7 +15,9 @@ export default class SearchBar extends React.Component {
             isLive: false,
 
             stationList: [],
-            languageList: []
+            languageList: [],
+
+            freqErr: "",
         }
     }
 
@@ -28,7 +30,11 @@ export default class SearchBar extends React.Component {
     }
 
     onChange(e) {
-        this.setState({ [e.target.name]: (e.target.value === "") ? e.target.checked : e.target.value });
+        if (e.target.name == "freq") {
+            if (!this.validateFreqInput(e)) return;
+        }
+
+        this.setState({ [e.target.name]: (e.target.value === "" && e.target.name !== "freq") ? e.target.checked : e.target.value });
     }
 
     onSubmit(e) {
@@ -39,6 +45,26 @@ export default class SearchBar extends React.Component {
             freq: this.state.freq,
             isLive: +this.state.isLive
         });
+    }
+
+    validateFreqInput(e) {
+        let freq = e.target.value;
+
+        if (freq === "") {
+            this.setState({freqErr: ""});
+            return true;
+        }
+
+        freq = parseInt(freq);
+
+        // Frequency must be a number between 10 - 30,000kHz
+        if (!(freq >= 10 && freq <= 30000 && !isNaN(freq))) {
+            this.setState({freqErr: "Frequency must be between 10 - 30,000kHz"})
+            return false;
+        } else {
+            this.setState({freqErr: ""});
+            return true;
+        }
     }
     
     render() {
@@ -84,6 +110,7 @@ export default class SearchBar extends React.Component {
                             startAdornment: <InputAdornment position="start">kHz</InputAdornment>
                         }}
                         placeholder="Leave blank for all"
+                        helperText={this.state.freqErr}
                         onChange={(e) => this.onChange(e)}
                     />
                 </Grid>
@@ -104,7 +131,15 @@ export default class SearchBar extends React.Component {
             </Grid>
                 
             <Grid style={{marginTop: "16px"}}>
-                <Button variant="contained" color="primary" type="submit" onClick={(e) => this.onSubmit(e) }>Search</Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    onClick={(e) => this.onSubmit(e)}
+                    disabled={this.state.freqErr.length > 0}
+                >
+                    Search
+                </Button>
             </Grid>
             </div>
         )
