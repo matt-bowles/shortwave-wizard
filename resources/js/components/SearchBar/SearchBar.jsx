@@ -140,6 +140,11 @@ export default class SearchBar extends React.Component {
                 >
                     Search
                 </Button>
+                <Button
+                    onClick={() => this.props.toggleTimeFormat()}
+                >
+                    Toggle between UTC/local time
+                </Button>
             </Grid>
             </div>
         )

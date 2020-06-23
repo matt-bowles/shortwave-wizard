@@ -13,14 +13,16 @@ export default class SearchPage extends Component {
              broadcasts: [],
              pageData: {},
              isLoading: false,
+             usingUTC: true
         }
 
         this.handleFilterSearch = this.handleFilterSearch.bind(this);
+        this.toggleTimeFormat = this.toggleTimeFormat.bind(this);
         this.changePage = this.changePage.bind(this);
     }
 
     async handleFilterSearch(params) {
-        this.setState({ isLoading: true })
+        this.setState({ isLoading: true, usingUTC: true })
         let data = await filterSearch(params);
         
         let broadcasts = data.data.data;
@@ -38,6 +40,30 @@ export default class SearchPage extends Component {
         let pageData = data.data;
 
         this.setState({ broadcasts, pageData, isLoading: false });
+    }
+
+    /**
+     * Converts the schedule of a broadcast between UTC and their local timezone,
+     * and vice versa.
+     */
+    toggleTimeFormat() {
+        // Num. mins user's timezone is +/- UTC
+        let offset = -(new Date().getTimezoneOffset())/0.6;
+
+        if (this.state.broadcasts.length > 0) {
+            let br = this.state.broadcasts;
+            let flip = this.state.usingUTC ? 1 : -1;
+
+            br.map((broadcast) => {
+                    broadcast.start = (broadcast.start+(flip)*offset)%2400;
+                    broadcast.end = (broadcast.end+(flip)*offset)%2400;
+
+                    if (broadcast.start < 0) broadcast.start += 2400;
+                    if (broadcast.end < 0) broadcast.end += 2400;
+            });
+
+            this.setState({ broadcasts: br, usingUTC: !this.state.usingUTC });
+        }
     }
 
     renderBroadcastList() {
@@ -61,6 +87,7 @@ export default class SearchPage extends Component {
             <div>
                 <SearchBar 
                     handleFilterSearch={this.handleFilterSearch}
+                    toggleTimeFormat={this.toggleTimeFormat}
                 />
                 {this.renderBroadcastList()}
             </div>
