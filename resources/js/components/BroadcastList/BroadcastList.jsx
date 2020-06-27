@@ -55,8 +55,9 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                             <TableCell>Station</TableCell>
                             <TableCell>Language</TableCell>
                             <TableCell>Days</TableCell>
-                            <TableCell>Time (UTC)</TableCell>
+                            <TableCell>Time</TableCell>
                             <TableCell>Broadcast Origin</TableCell>
+                            <TableCell></TableCell> {/* Displays a link to hear the broadcast, if it is live */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -68,6 +69,14 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                                 <TableCell>{getDayString(broadcast.days)}</TableCell>
                                 <TableCell title={convertToLocalTime(broadcast.start, broadcast.end)}>{formatTime(broadcast.start)} - {formatTime(broadcast.end)}</TableCell>
                                 <TableCell><Flag code={broadcast.country} style={{marginRight: "5px"}} height="15" width="25" /> <a target="_blank" href={`http://maps.google.com?q=${broadcast.coords}`}>{broadcast.location}</a></TableCell>
+
+                                <TableCell>
+                                    {(broadcast.isLive
+                                        ? <a href={`websdr.ewi.utwente.nl:8901/?tune=${broadcast.freq}am`} target="_blank" title="Listen via UTwente's WebSDR (reception may vary)">📻</a>
+                                        : <></>
+                                    )}
+                                </TableCell>
+
                             </TableRow>
                         )}
                     </TableBody>
