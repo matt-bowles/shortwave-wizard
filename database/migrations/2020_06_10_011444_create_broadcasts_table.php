@@ -25,8 +25,8 @@ class CreateBroadcastsTable extends Migration
             $table->integer('azimuth')->nullable();
             $table->string('location')->nullable();
             $table->string('country', 3)->nullable();
-            $table->decimal('lat')->nullable();
-            $table->decimal('lon')->nullable();
+            $table->decimal('lat', 7, 4)->nullable();
+            $table->decimal('lon', 6, 4)->nullable();
             // $table->timestamps();
         });
     }
