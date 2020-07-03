@@ -71,7 +71,8 @@ class BroadcastController extends Controller
     {
         $languages = Array();
         $stations = Array();
-        $options = Broadcast::select('language', 'station')
+        $bands = Array();
+        $options = BroadcastView::select('language', 'station', 'band')
             ->distinct()
             ->get();
 
@@ -83,12 +84,17 @@ class BroadcastController extends Controller
             if (!in_array($option['station'], $stations)) {
                 array_push($stations, $option['station']);
             }
+
+            if (!in_array($option['band'], $bands)) {
+                array_push($bands, $option['band']);
+            }
         }
 
         // Alphabetically sort all the options
         sort($languages);
         sort($stations);
+        sort($bands);
 
-        return response()->json(["languages" => $languages, "stations" => $stations], 200);
+        return response()->json(["languages" => $languages, "stations" => $stations, "bands" => $bands], 200);
     }
 }
