@@ -46,7 +46,7 @@ class BroadcastController extends Controller
         $queries = [];
 
         $columns = [
-            'freq', 'station', 'language', 'isLive'
+            'freq', 'station', 'language', 'isLive', 'band'
         ];
 
         foreach($columns as $column) {
