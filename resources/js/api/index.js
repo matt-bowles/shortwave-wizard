@@ -31,6 +31,20 @@ export const filterSearch = async (params) => {
     }
 }
 
+/**
+ * Get information for a -single- broadcast from a provided ID
+ * @param {*} id Broadcast ID 
+ */
+export const getOne = async (id) => {
+    try {
+        let data = await axios.get(`${API_URL}/broadcasts/getOne?id=${id}`);
+        return data;
+    } catch (err) {
+        // TODO: handle error
+        console.log(err);
+    }
+}
+
 export const getChangePageData = async (url) => {
     try {
         let data = await axios.get(url);

@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Table
 import Flag from 'react-world-flags';
 
 import styles from './BroadcastList.module.css';
+import { Link } from 'react-router-dom';
 
 export default function BroadcastList({broadcasts, pageData, changePage}) {
     
@@ -57,12 +58,18 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                             <TableCell>Days</TableCell>
                             <TableCell>Time</TableCell>
                             <TableCell>Broadcast Origin</TableCell>
-                            <TableCell></TableCell> {/* Displays a link to hear the broadcast, if it is live */}
+                            <TableCell>Link</TableCell>{/* Displays a link to hear the broadcast, if it is live */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {broadcasts.map((broadcast, i) => 
-                            <TableRow key={i} hover className={(broadcast.isLive === 1) ? "live" : ""}>
+                            <TableRow key={i}
+                                component={Link}
+                                hover
+                                className={(broadcast.isLive === 1) ? "live" : ""}
+                                to={{ pathname: `/broadcasts/${broadcast.id}` }}
+                                style={{ textDecoration: "none" }}
+                            >
                                 <TableCell>{broadcast.freq}</TableCell>
                                 <TableCell>{broadcast.station}</TableCell>
                                 <TableCell>{broadcast.language}</TableCell>
@@ -76,20 +83,17 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                                         : <></>
                                     )}
                                 </TableCell>
-
                             </TableRow>
                         )}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                            
                             rowsPerPageOptions={[]} /* Remove option for num. rows per page */
                             count={pageData.total}
                             rowsPerPage={pageData.per_page}
                             page={pageData.current_page-1}
                             onChangePage={handleChangePage}
-                            
                             />
                         </TableRow>
                     </TableFooter>

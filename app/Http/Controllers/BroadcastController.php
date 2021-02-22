@@ -38,6 +38,7 @@ class BroadcastController extends Controller
      *  - station
      *  - language
      *  - whether the broadcast is live
+     *  - ID
      */
     public function filter(Request $request)
     {
@@ -46,7 +47,7 @@ class BroadcastController extends Controller
         $queries = [];
 
         $columns = [
-            'freq', 'station', 'language', 'isLive', 'band'
+            'freq', 'station', 'language', 'isLive', 'band', 'id'
         ];
 
         foreach($columns as $column) {
@@ -58,6 +59,12 @@ class BroadcastController extends Controller
 
         $broadcasts = $broadcasts->paginate(self::PAGINATION_NUM)->appends($queries);
         return response()->json($broadcasts, 200);
+    }
+
+    public function getOne(Request $request)
+    {
+        $broadcast = BroadcastView::find($request->id);
+        return $broadcast;
     }
 
     /**
