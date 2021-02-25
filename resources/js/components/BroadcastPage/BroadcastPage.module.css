@@ -1,0 +1,6 @@
+/* Required by Leaflet */
+.leaflet-container {
+    margin: auto;
+    width: 80%;
+    height: 50vh;
+}
