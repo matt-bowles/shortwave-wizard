@@ -16,6 +16,7 @@ export default class SearchBar extends React.Component {
 
             stationList: [],
             languageList: [],
+            bandList: [],
 
             freqErr: "",
         }
@@ -26,6 +27,7 @@ export default class SearchBar extends React.Component {
         this.setState({
             stationList: data.data.stations,
             languageList: data.data.languages,
+            bandList: data.data.bands
         })
     }
 
@@ -33,6 +35,10 @@ export default class SearchBar extends React.Component {
         if (e.target.name == "freq") {
             if (!this.validateFreqInput(e)) return;
         }
+
+        // document.location = `&${e.target.name}=${e.target.value}`;
+
+        // this.props.history.push(`&${e.target.name}=${e.target.value}`);
 
         this.setState({ [e.target.name]: (e.target.value === "" && e.target.name !== "freq") ? e.target.checked : e.target.value });
     }
@@ -139,11 +145,6 @@ export default class SearchBar extends React.Component {
                     disabled={this.state.freqErr.length > 0}
                 >
                     Search
-                </Button>
-                <Button
-                    onClick={() => this.props.toggleTimeFormat()}
-                >
-                    Toggle between UTC/local time
                 </Button>
             </Grid>
             </div>

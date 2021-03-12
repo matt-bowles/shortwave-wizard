@@ -54,3 +54,28 @@ export const getChangePageData = async (url) => {
         console.log(err);
     }
 }
+
+export const getDayString = (days) => {
+    days = days.toString();
+    let formatted = "";
+
+    if (days.includes(2)) formatted += "M";
+    if (days.includes(3)) formatted += "Tu";
+    if (days.includes(4)) formatted += "W";
+    if (days.includes(5)) formatted += "Th";
+    if (days.includes(6)) formatted += "F";
+    if (days.includes(7)) formatted += "Sa";
+    if (days.includes(1)) formatted += "Su";
+
+    return formatted;
+}
+
+export const convertToLocalTime = (start, end) => {
+    return "[placeholder]";
+}
+
+export const formatTime = (time) => {
+    var formatted = time.toString().padStart(4, '0'); 
+    formatted = formatted.substring(0,2) + ":" + formatted.substring(2);    // hh:mm
+    return formatted;
+}

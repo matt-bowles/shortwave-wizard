@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 
 import { getOne } from "../../api";
+import { getDayString, convertToLocalTime, formatTime } from '../../api/';
 
 import { MapContainer, TileLayer, Marker, Popup, Polygon, Circle } from "react-leaflet";
 import { LatLng } from "leaflet";
 import { destination } from 'leaflet-geometryutil';
+
+import { Paper } from '@material-ui/core';
 
 import styles from "./BroadcastPage.module.css";
 
@@ -77,7 +80,7 @@ export default class BroadcastPage extends Component {
 
     render() {
         return (
-            <div>
+            <Paper>
                 {/* Leaflet CSS */}
                 <link
                     rel="stylesheet"
@@ -95,11 +98,11 @@ export default class BroadcastPage extends Component {
                 {/* Wait until broadcast info has been loaded */}
                 {this.state.freq !== 0 ? (
                     <div>
-                        <p>Station: {this.state.station}</p>
+                        <h2>{this.state.station}</h2>
                         <p>Frequency: {this.state.freq} kHz</p>
                         <p>Language: {this.state.language}</p>
-                        <p>Days: {this.state.days}</p>
-                        <p> Time: {this.state.start} - {this.state.end}</p>
+                        <p>Days: {getDayString(this.state.days)}</p>
+                        <p>Time: {formatTime(this.state.start)} - {formatTime(this.state.end)}</p>
                         <p>Azimuth: {this.state.azimuth}</p>
                         <p>Power: {this.state.power}</p>
 
@@ -148,7 +151,7 @@ export default class BroadcastPage extends Component {
                     // Loading ...
                     <h1>Loading...</h1>
                 )}
-            </div>
+            </Paper>
         );
     }
 }

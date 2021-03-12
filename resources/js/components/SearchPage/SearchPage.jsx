@@ -78,6 +78,8 @@ export default class SearchPage extends Component {
                 broadcasts={this.state.broadcasts}
                 pageData={this.state.pageData}
                 changePage={this.changePage}
+                toggleTimeFormat={this.toggleTimeFormat}
+                usingUTC={this.state.usingUTC}
             />
         );
     }
@@ -87,7 +89,6 @@ export default class SearchPage extends Component {
             <div>
                 <SearchBar 
                     handleFilterSearch={this.handleFilterSearch}
-                    toggleTimeFormat={this.toggleTimeFormat}
                 />
                 {this.renderBroadcastList()}
             </div>

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter, Paper as div, makeStyles } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter, Paper as div, Chip, makeStyles } from '@material-ui/core';
 import Flag from 'react-world-flags';
 
 import styles from './BroadcastList.module.css';
 import { Link } from 'react-router-dom';
 
-export default function BroadcastList({broadcasts, pageData, changePage}) {
+import { getDayString, convertToLocalTime, formatTime } from '../../api/';
+
+export default function BroadcastList({broadcasts, pageData, changePage, usingUTC, toggleTimeFormat}) {
     
     if (pageData.total === undefined) return <></>;
     if (pageData.total === 0) return <h2>No results found</h2>;
-
-
 
     // 1 = Sunday, 2 = Monday ... 7 = Saturday
     let today = new Date().getDay()+1;
@@ -19,31 +19,6 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
     const handleChangePage = async (event, newPage) => {
         let url = ((pageData.current_page-1) < newPage) ? pageData.next_page_url : pageData.prev_page_url;
         changePage(url);
-    }
-
-    const getDayString = (days) => {
-        days = days.toString();
-        let formatted = "";
-
-        if (days.includes(2)) formatted += "M";
-        if (days.includes(3)) formatted += "Tu";
-        if (days.includes(4)) formatted += "W";
-        if (days.includes(5)) formatted += "Th";
-        if (days.includes(6)) formatted += "F";
-        if (days.includes(7)) formatted += "Sa";
-        if (days.includes(1)) formatted += "Su";
-
-        return formatted;
-    }
-
-    const formatTime = (time) => {
-        var formatted = time.toString().padStart(4, '0'); 
-        formatted = formatted.substring(0,2) + ":" + formatted.substring(2);    // hh:mm
-        return formatted;
-    }
-
-    const convertToLocalTime = (start, end) => {
-        return "[placeholder]";
     }
     
     return (
@@ -56,7 +31,13 @@ export default function BroadcastList({broadcasts, pageData, changePage}) {
                             <TableCell>Station</TableCell>
                             <TableCell>Language</TableCell>
                             <TableCell>Days</TableCell>
-                            <TableCell>Time</TableCell>
+                            <TableCell>Time 
+                                <Chip 
+                                label={(usingUTC) ? "UTC" : "Local time"}
+                                onClick={() => toggleTimeFormat()}
+                                style={{marginLeft: "5px"}}
+                                />
+                            </TableCell>
                             <TableCell>Broadcast Origin</TableCell>
                             <TableCell>Link</TableCell>{/* Displays a link to hear the broadcast, if it is live */}
                         </TableRow>
