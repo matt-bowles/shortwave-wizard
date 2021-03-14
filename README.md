@@ -1,4 +1,4 @@
-# Shortwave Wizard 🧙‍♂️ *(June 2019 - present)
+# Shortwave Wizard 🧙‍♂️ *(June 2019 - present)*
 
 ## About
 Currently in development (albeit in a useable state), Shortwave Wizard aims to provide shortwave DXers with a convenient tool to find shortwave broadcasts to possibly receieve, as well as identify any unknown transmissions.
