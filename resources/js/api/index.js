@@ -45,6 +45,21 @@ export const getOne = async (id) => {
     }
 }
 
+/**
+ * Fetches a list of broadcasts that are "related" to the provided ID (e.g. via language, broadcast location, azimuth, etc.)
+ * @param {*} id Valid broadcast ID
+ * @returns an array of all "related broadcasts"
+ */
+export const getRelatedBroadcasts = async (id) => {
+    try {
+        let data = await axios.get(`${API_URL}/broadcasts/related?id=${id}`);
+        return data;
+    } catch (err) {
+        // TODO: handle error
+        console.log(err);
+    }
+}
+
 export const getChangePageData = async (url) => {
     try {
         let data = await axios.get(url);

@@ -64,7 +64,32 @@ class BroadcastController extends Controller
     public function getOne(Request $request)
     {
         $broadcast = BroadcastView::find($request->id);
+
         return $broadcast;
+    }
+
+    /**
+     * Broadcasts from the same station, language, and azimuth, but at a different time/freq
+     */
+    public function getRelatedBroadcasts(Request $request)
+    {
+        // Get details about the "inal" broadcast (e.g. station, language, etc.)
+        $originalBroadcast = $this->getOne($request);
+
+        // Check for invalid ID, return 404
+        if (!is_object($originalBroadcast)) {
+            return response()->json(['error' => 'Invalid broadcast ID'], 404);
+        }
+
+        // Get an array of broadcasts that are "related" to the original broadcast
+        // TODO: this fetches an unnecessary number of attributes per broadcast
+        $relatedBroadcasts = Broadcast::all()
+            ->where('station', '=', $originalBroadcast->station)
+            ->where('language', '=', $originalBroadcast->language)
+            ->where('azimuth', '=', $originalBroadcast->azimuth)
+            ->where('id', '!=', $originalBroadcast->id);
+
+        return $relatedBroadcasts;
     }
 
     /**
