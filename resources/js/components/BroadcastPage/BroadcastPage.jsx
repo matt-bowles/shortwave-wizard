@@ -53,6 +53,9 @@ export default class BroadcastPage extends Component {
             relatedBroadcasts: []
         });
 
+        // Set page title
+        document.title = `Shortwave Wizard 🧙 – ${this.state.station} (${this.state.freq} kHz, ${this.state.language})`
+
         var relatedBroadcasts = await getRelatedBroadcasts(id);
 
         if (relatedBroadcasts) {

@@ -8,7 +8,9 @@ export default class SearchPage extends Component {
     
     constructor() {
         super();
-    
+        
+        document.title = "Shortwave Wizard 🧙";
+
         this.state = {
              broadcasts: [],
              pageData: {},
