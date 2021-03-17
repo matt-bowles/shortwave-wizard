@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter, Paper as div, Chip, makeStyles } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableFooter, Paper as div, Chip, makeStyles, Typography } from '@material-ui/core';
 import Flag from 'react-world-flags';
 
 import styles from './BroadcastList.module.css';
@@ -10,7 +10,7 @@ import { getDayString, convertToLocalTime, formatTime } from '../../api/';
 export default function BroadcastList({broadcasts, pageData, changePage, usingUTC, toggleTimeFormat}) {
     
     if (pageData.total === undefined) return <></>;
-    if (pageData.total === 0) return <h2>No results found</h2>;
+    if (pageData.total === 0) return <Typography variant="h4">No results found</Typography>;
 
     // 1 = Sunday, 2 = Monday ... 7 = Saturday
     let today = new Date().getDay()+1;

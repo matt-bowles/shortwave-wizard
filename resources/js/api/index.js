@@ -2,9 +2,20 @@ import axios from 'axios';
 
 const API_URL = "http://127.0.0.1:8000/api";
 
-export const fetchOptions = async () => {
+export const fetchOptions = async (params) => {
+    
+    let url = `${API_URL}/broadcasts/selectOptions?`;
+     
+    if (params) {
+        // Construct URL from provided params
+        Object.keys(params).forEach((val) => {
+            if (params[val] === 0 || params[val] === "" || params[val] === undefined) return;
+            url += `&${val}=${params[val]}`;
+        });
+    }
+    
     try {
-        let data = await axios.get(`${API_URL}/broadcasts/selectOptions`);
+        let data = await axios.get(url);
         return data;
     } catch (err) {
         // TODO: handle error

@@ -28,10 +28,12 @@ export default class SearchBar extends React.Component {
             stationList: data.data.stations,
             languageList: data.data.languages,
             bandList: data.data.bands
-        })
+        });
+
+        this.onSubmit();
     }
 
-    onChange(e) {
+    async onChange(e) {
         if (e.target.name == "freq") {
             if (!this.validateFreqInput(e)) return;
         }
@@ -40,11 +42,24 @@ export default class SearchBar extends React.Component {
 
         // this.props.history.push(`&${e.target.name}=${e.target.value}`);
 
-        this.setState({ [e.target.name]: (e.target.value === "" && e.target.name !== "freq") ? e.target.checked : e.target.value });
+        await this.setState({ [e.target.name]: (e.target.value === "" && e.target.name !== "freq") ? e.target.checked : e.target.value });
+
+        const data = await fetchOptions({
+            station: this.state.station,
+            language: this.state.language,
+            freq: this.state.freq,
+        });
+
+        this.setState({
+            stationList: data.data.stations,
+            languageList: data.data.languages,
+            bandList: data.data.bands
+        });
+
+        this.onSubmit();
     }
 
-    onSubmit(e) {
-        e.preventDefault();
+    onSubmit() {
         this.props.handleFilterSearch({
             station: this.state.station,
             language: this.state.language,
@@ -86,7 +101,7 @@ export default class SearchBar extends React.Component {
 
                         <NativeSelect defaultValue="" onChange={(e) => this.onChange(e)} name="station">
                             <option value="">All stations</option>
-                            {this.state.stationList.map((station, i) => <option key={i} value={station}>{station}</option>)}
+                            {this.state.stationList.map((station, i) => <option key={i} value={station} selected={this.state.station !== "" && (station == this.state.station)}>{station}</option>)}
                         </NativeSelect>
                         
                     </FormControl>
@@ -99,7 +114,7 @@ export default class SearchBar extends React.Component {
 
                         <NativeSelect label="Language" defaultValue="" onChange={(e) => this.onChange(e)} name="language">
                             <option value="">All languages</option>
-                            {this.state.languageList.map((language, i) => <option key={i} value={language}>{language}</option>)}
+                            {this.state.languageList.map((language, i) => <option key={i} value={language} selected={this.state.language !== "" && (language == this.state.language)}>{language}</option>)}
                         </NativeSelect>
 
                     </FormControl>

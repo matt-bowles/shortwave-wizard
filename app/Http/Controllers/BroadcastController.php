@@ -99,14 +99,19 @@ class BroadcastController extends Controller
      *  - all stations
      *  - all languages
      */
-    public function selectOptions()
+    public function selectOptions(Request $request)
     {
         $languages = Array();
         $stations = Array();
         $bands = Array();
-        $options = BroadcastView::select('language', 'station', 'band')
-            ->distinct()
-            ->get();
+
+        $options = BroadcastView::select('language', 'station', 'band');
+
+        foreach($request->all() as $key => $value) {
+            $options->where($key, '=', $value);
+        }
+
+        $options = $options->distinct()->get();
 
         foreach($options as $option) {
             if (!in_array($option['language'], $languages)) {
