@@ -9,7 +9,7 @@ import { destination } from 'leaflet-geometryutil';
 
 import { Paper, Typography, Grid, Box } from '@material-ui/core';
 
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import styles from "./BroadcastPage.module.css";
 
@@ -36,7 +36,7 @@ export default class BroadcastPage extends Component {
 
         // Invalid ID
         if (!broadcast) {
-            return alert("You have provided an invalid broadcast ID.");
+            this.setState({error: true});
         }
 
         this.setState({
@@ -147,6 +147,10 @@ export default class BroadcastPage extends Component {
                     rel="stylesheet"
                     href="//cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.3/leaflet.draw.css"
                 />
+
+                {this.state.error &&
+                    <Redirect to="/404"/>
+                }
 
                 {/* Wait until broadcast info has been loaded */}
                 {this.state.freq !== 0 && this.state.finishedLoading ? (
